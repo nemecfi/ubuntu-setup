@@ -252,6 +252,39 @@ chmod 600 "$HOME/.ssh/config"
 
 
 # ============================================================
+# 13. NODE.JS + AI CLI TOOLS (Claude Code, Gemini CLI)
+# ============================================================
+# Both CLIs are distributed as npm packages and need a recent Node (>= 18).
+# Use NodeSource's LTS repo so we don't depend on whatever Node version
+# Ubuntu happens to ship.
+echo ""
+echo "=== Installing Node.js (NodeSource LTS) ==="
+
+if command -v node >/dev/null && node --version | grep -qE '^v(2[0-9]|[3-9][0-9])'; then
+    echo "Node $(node --version) already installed, skipping NodeSource setup"
+else
+    curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
+    sudo apt install -y nodejs
+fi
+
+echo ""
+echo "=== Installing Claude Code ==="
+if command -v claude >/dev/null; then
+    echo "Claude Code already installed, skipping"
+else
+    sudo npm install -g @anthropic-ai/claude-code
+fi
+
+echo ""
+echo "=== Installing Gemini CLI ==="
+if command -v gemini >/dev/null; then
+    echo "Gemini CLI already installed, skipping"
+else
+    sudo npm install -g @google/gemini-cli
+fi
+
+
+# ============================================================
 # DONE
 # ============================================================
 echo ""
