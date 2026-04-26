@@ -41,6 +41,39 @@ echo "Setting system accent color to blue..."
 gsettings set org.gnome.desktop.interface accent-color 'blue'
 
 
+# 2.1 TRUE GLOBAL FONTS (JetBrainsMono Nerd Font)
+echo "Applying True Global Font setup..."
+
+# Part 1: GNOME UI (standard apps)
+gsettings set org.gnome.desktop.interface font-name 'JetBrainsMono Nerd Font 10'
+gsettings set org.gnome.desktop.interface document-font-name 'JetBrainsMono Nerd Font 10'
+gsettings set org.gnome.desktop.interface monospace-font-name 'JetBrainsMono Nerd Font 11'
+gsettings set org.gnome.desktop.wm.preferences titlebar-font 'JetBrainsMono Nerd Font Bold 10'
+
+# Part 2: Flatpak access to host fonts
+if command -v flatpak >/dev/null; then
+    echo "Allowing Flatpaks to access system fonts..."
+    sudo flatpak override --filesystem=~/.local/share/fonts
+fi
+
+# Part 3: Qt/KDE apps mimic GTK theme
+if ! grep -q "QT_QPA_PLATFORMTHEME" "$HOME/.bashrc"; then
+    echo "Ensuring Qt apps follow GNOME theme..."
+    echo 'export QT_QPA_PLATFORMTHEME=gtk2' >> "$HOME/.bashrc"
+fi
+
+# Part 4: GNOME Shell (Top Bar/Menus) custom CSS override
+echo "Creating GNOME Shell font override..."
+mkdir -p "$HOME/.local/share/gnome-shell/theme"
+cat <<EOF > "$HOME/.local/share/gnome-shell/theme/gnome-shell.css"
+/* Force Global Font for GNOME Shell */
+stage {
+    font-family: 'JetBrainsMono Nerd Font', Sans-Serif;
+    font-size: 10pt;
+}
+EOF
+
+
 # 3. INTERFACE TWEAKS
 echo "Cleaning up interface clutter..."
 # Disable the 'Activities' corner button text (makes it just the icon if extension is present)
