@@ -87,9 +87,10 @@ gsettings set org.gnome.desktop.interface show-battery-percentage true
 gsettings set org.gnome.mutter center-new-windows true
 gsettings set org.gnome.desktop.interface enable-hot-corners false
 
-# Disable web search results in Activities overview (Firefox, etc.)
+# Disable web search results in Activities overview (Firefox, Edge, etc.)
 echo "Disabling web search in overview..."
 gsettings set org.gnome.desktop.search-providers disable-external true
+gsettings set org.gnome.desktop.search-providers disabled "['firefox_firefox.desktop', 'firefox.desktop']"
 
 # Nautilus (File Manager) Tweaks
 echo "Applying File Manager tweaks..."

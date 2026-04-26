@@ -11,6 +11,15 @@ echo "==========================================="
 # 1. REMOVE BLOATWARE
 echo ""
 echo "=== Removing default bloatware ==="
+
+# Remove specific snaps first
+echo "Removing Firefox and Thunderbird snaps..."
+for s in firefox thunderbird; do
+    if snap list "$s" >/dev/null 2>&1; then
+        sudo snap remove "$s"
+    fi
+done
+
 BLOAT_PACKAGES=(
     totem
     rhythmbox
@@ -25,6 +34,7 @@ BLOAT_PACKAGES=(
     gnome-maps
     gnome-contacts
     geary
+    firefox
 )
 
 for pkg in "${BLOAT_PACKAGES[@]}"; do
