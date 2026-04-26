@@ -1,0 +1,29 @@
+# OS junk
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor / IDE files
+*.swp
+*.swo
+*~
+.idea/
+.vscode/
+.netrwhist
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+*.egg-info/
+
+# Node
+node_modules/
+
+# Build / cache
+dist/
+build/
+*.log
+.cache/

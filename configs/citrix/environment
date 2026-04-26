@@ -1,0 +1,35 @@
+# Citrix Workspace Environment Variables
+# Tuned for AMD Radeon (RDNA) on Linux + Wayland/X11.
+# Sourced from ~/.bashrc.
+
+# --- Graphics & rendering -----------------------------------
+# Use hardware H.264/H.265 decode where possible (VAAPI on AMD).
+# Set to "software" if you see HW decode glitches.
+export VDGFX_THREAD_PRIORITY=high
+export VDGFX_DECODE_MODE=hardware
+export CITRIX_USE_OPENGL=1
+
+# --- AMD Mesa / RADV tuning ---------------------------------
+# Vulkan: prefer RADV (AMD open-source). Enable graphics-pipeline-library
+# (faster shader compile) and NGG culling (geometry perf).
+export AMD_VULKAN_ICD=RADV
+export RADV_PERFTEST=gpl,nggc
+
+# --- Threading & memory -------------------------------------
+# Adapt to the actual CPU count at shell startup; leave 1-2 cores for the system.
+export OMP_NUM_THREADS="$(nproc)"
+export OMP_WAIT_POLICY=ACTIVE
+export MALLOC_ARENA_MAX=4
+
+# --- Network & ICA protocol ---------------------------------
+export ICAROOT=/opt/Citrix/ICAClient
+export CITRIX_TCP_RECV_BUFFER=8388608
+export CITRIX_TCP_SEND_BUFFER=8388608
+
+# --- Audio --------------------------------------------------
+# Slightly higher latency target reduces stutter over WAN.
+export PULSE_LATENCY_MSEC=60
+
+# --- GStreamer (for HDX multimedia redirection) -------------
+export GST_PLUGIN_PATH=/opt/Citrix/ICAClient/util
+export GST_DEBUG=1
