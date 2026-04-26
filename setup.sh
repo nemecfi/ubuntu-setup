@@ -21,6 +21,7 @@ chmod +x "$SCRIPT_DIR"/scripts/*.sh
 bash "$SCRIPT_DIR/scripts/01-debloat-and-perf.sh"
 bash "$SCRIPT_DIR/scripts/02-install-packages.sh"
 bash "$SCRIPT_DIR/scripts/03-configure-system.sh"
+bash "$SCRIPT_DIR/scripts/04-customization.sh"
 
 echo ""
 echo "==========================================="
