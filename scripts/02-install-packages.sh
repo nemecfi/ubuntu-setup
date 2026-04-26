@@ -40,6 +40,7 @@ PACKAGES=(
     gnome-software-plugin-flatpak
     lm-sensors
     gnome-shell-extension-appindicator
+    lazygit
 )
 
 # Automate EULA acceptance for ttf-mscorefonts-installer

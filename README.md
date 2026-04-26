@@ -30,7 +30,8 @@ After the script finishes, open **Extension Manager** (already installed) and se
 
 1.  **Vitals** — Provides the resource manager in the top bar (temperatures, CPU, RAM).
 2.  **Copyous** or **Clipboard Indicator** — Your preferred clipboard manager.
-3.  **AppIndicator and KStatusNotifierItem Support** — (Usually installed but ensure it's enabled for Signal/Discord icons).
+3.  **Caffeine** — Prevents your screen from dimming or locking (ideal for long reads/builds).
+4.  **AppIndicator and KStatusNotifierItem Support** — (Usually installed but ensure it's enabled for Signal/Discord icons).
 
 ## Performance Tweaks Included
 - **Swappiness:** Reduced to 10 for better RAM utilization.
