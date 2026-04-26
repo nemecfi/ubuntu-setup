@@ -7,6 +7,10 @@ set -e  # exit on first error
 # Path to this script (so we can find the configs/ folder next to it)
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
+# Log all output (stdout and stderr) to setup.log
+exec > >(tee -a "$SCRIPT_DIR/setup.log") 2>&1
+
+
 
 # ============================================================
 # 1. INSTALL APT PACKAGES
@@ -189,11 +193,15 @@ cp "$SCRIPT_DIR/configs/ghostty.config" "$HOME/.config/ghostty/config"
 echo ""
 echo "=== Installing extra apps ==="
 
-# Discord (snap)
-if snap list discord >/dev/null 2>&1; then
+# Discord (apt via direct deb download)
+if command -v discord >/dev/null; then
     echo "Discord is already installed, skipping"
 else
-    sudo snap install discord
+    TMP_DEB=$(mktemp)
+    echo "Downloading Discord..."
+    curl -fLo "$TMP_DEB" "https://discord.com/api/download?platform=linux&format=deb"
+    sudo apt install -y "$TMP_DEB"
+    rm -f "$TMP_DEB"
 fi
 
 # Bitwarden (snap)
@@ -217,6 +225,20 @@ else
 
     sudo apt update
     sudo apt install -y signal-desktop
+fi
+
+# Antigravity
+if command -v antigravity >/dev/null; then
+    echo "Antigravity is already installed, skipping"
+else
+    echo "Installing Antigravity..."
+    sudo mkdir -p /etc/apt/keyrings
+    curl -fsSL https://us-central1-apt.pkg.dev/doc/repo-signing-key.gpg | \
+      sudo gpg --dearmor --yes -o /etc/apt/keyrings/antigravity-repo-key.gpg
+    echo "deb [signed-by=/etc/apt/keyrings/antigravity-repo-key.gpg] https://us-central1-apt.pkg.dev/projects/antigravity-auto-updater-dev/ antigravity-debian main" | \
+      sudo tee /etc/apt/sources.list.d/antigravity.list > /dev/null
+    sudo apt update
+    sudo apt install -y antigravity
 fi
 
 
@@ -282,6 +304,19 @@ if command -v gemini >/dev/null; then
 else
     sudo npm install -g @google/gemini-cli
 fi
+
+
+# ============================================================
+# 14. DEFAULT APPLICATIONS
+# ============================================================
+echo ""
+echo "=== Setting default applications ==="
+
+# Set Microsoft Edge as default browser
+xdg-settings set default-web-browser microsoft-edge.desktop
+
+# Set VLC as default media player
+xdg-mime default vlc.desktop video/mp4 video/x-matroska video/avi video/quicktime audio/mpeg audio/x-wav audio/flac audio/ogg
 
 
 # ============================================================
