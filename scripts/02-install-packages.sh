@@ -34,6 +34,12 @@ PACKAGES=(
     mesa-vulkan-drivers
     vulkan-tools
     mesa-utils
+    fzf
+    fastfetch
+    flatpak
+    gnome-software-plugin-flatpak
+    lm-sensors
+    gnome-shell-extension-appindicator
 )
 
 # Automate EULA acceptance for ttf-mscorefonts-installer

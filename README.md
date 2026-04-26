@@ -1,27 +1,43 @@
-# installConfig
+# Ubuntu 26 LTS Setup
 
-Bootstrap scripts for a fresh Ubuntu 26 LTS install — my personal setup.
+Modular bootstrap scripts for a fresh Ubuntu 26 LTS install — highly optimized for AMD hardware and developer productivity.
 
 ## Layout
 
-```
-setup.sh          # base packages, apps, fonts, git, ssh, ai cli
-citrixSetup.sh    # Citrix Workspace + AMD video tuning
-gnomeSetup.sh     # GNOME desktop tweaks
-setup.py          # Python port of setup.sh (alternative)
-configs/          # all the dotfiles dropped into ~/
+```text
+setup.sh                # Main orchestrator
+scripts/
+  ├── 01-debloat-and-perf.sh   # Bloat removal, swappiness, boot speed
+  ├── 02-install-packages.sh   # Apt, snap, deb packages, fonts, Node.js
+  └── 03-configure-system.sh   # Dotfiles, Git, SSH, GNOME & Nautilus tweaks
+configs/                       # Personal dotfiles and app configs
+citrixSetup.sh                 # Citrix Workspace + AMD video tuning
 ```
 
-## Run order
+## How to Run
 
 ```bash
-bash setup.sh        # do this first
-bash citrixSetup.sh  # only if you use Citrix
-bash gnomeSetup.sh   # only on GNOME (Ubuntu default)
+# Run the main orchestrator
+bash setup.sh
+
+# Optional: Citrix setup (requires .deb in configs/citrix/)
+bash citrixSetup.sh
 ```
 
-## Notes
+## Recommended Manual Steps
 
-- `citrixSetup.sh` looks for an `icaclient_*.deb` in `configs/citrix/`. Download it from [citrix.com](https://www.citrix.com/downloads/workspace-app/linux/) (EULA gate) and drop it there before running.
-- Scripts are idempotent — safe to re-run.
-- Targets Ubuntu / Debian (uses `apt`, `snap`).
+After the script finishes, open **Extension Manager** (already installed) and search/install the following extensions to complete the setup:
+
+1.  **Vitals** — Provides the resource manager in the top bar (temperatures, CPU, RAM).
+2.  **Copyous** or **Clipboard Indicator** — Your preferred clipboard manager.
+3.  **AppIndicator and KStatusNotifierItem Support** — (Usually installed but ensure it's enabled for Signal/Discord icons).
+
+## Performance Tweaks Included
+- **Swappiness:** Reduced to 10 for better RAM utilization.
+- **Boot Speed:** Disabled `NetworkManager-wait-online` and reduced GRUB timeout to 1s.
+- **AMD Support:** Includes `amd64-microcode`, `mesa-vulkan-drivers`, and `lm-sensors`.
+- **Search:** Disabled web search results in the GNOME Activities overview.
+
+## Notes
+- Scripts are **idempotent** — safe to re-run.
+- Logged output can be found in `setup.log`.
