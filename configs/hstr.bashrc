@@ -6,7 +6,10 @@ export HISTCONTROL=ignorespace   # leading space hides commands from history
 export HISTFILESIZE=10000        # increase history file size (default is 500)
 export HISTSIZE=${HISTFILESIZE}  # increase history size (default is 500)
 # ensure synchronization between bash memory and history file
-PROMPT_COMMAND="history -a; history -n; ${PROMPT_COMMAND}"
+if [[ ${PROMPT_COMMAND:=} != *"history -a; history -n"* ]]; then
+    PROMPT_COMMAND="history -a; history -n; ${PROMPT_COMMAND%;}"
+    PROMPT_COMMAND="${PROMPT_COMMAND%;}"
+fi
 function hstrnotiocsti {
     { READLINE_LINE="$( { </dev/tty hstr ${READLINE_LINE}; } 2>&1 1>&3 3>&- )"; } 3>&1;
     READLINE_POINT=${#READLINE_LINE}

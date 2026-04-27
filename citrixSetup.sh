@@ -135,7 +135,32 @@ fi
 
 
 # ============================================================
-# 7. AMD / VIDEO ACCELERATION VERIFICATION
+# 7. NATIVE INTEGRATION & GNOME TWEAKS
+# ============================================================
+# Citrix uses a tray icon (AppIndicator). On GNOME, this requires an 
+# extension. We also install webkit for Browser Redirection.
+echo ""
+echo "=== Improving Native Desktop Integration ==="
+
+# Install GNOME AppIndicator extension support if not present
+sudo apt install -y gnome-shell-extension-appindicator gir1.2-ayatanaappindicator3-0.1
+echo "Enabling AppIndicator extension for tray icons..."
+gnome-extensions enable appindicatorsupport@rgcjonas.gmail.com 2>/dev/null || true
+
+# Browser Redirection & Teams Optimization dependencies
+sudo apt install -y libwebkit2gtk-4.1-0 libvorbisfile3 libspeex1 libspeexdsp1 libpulse0
+
+# Fix the selfservice.desktop file to support HiDPI and proper icons
+SELFSERVICE_DESKTOP="/usr/share/applications/selfservice.desktop"
+if [ -f "$SELFSERVICE_DESKTOP" ]; then
+    echo "Tuning selfservice.desktop for HiDPI..."
+    if ! grep -q "GDK_BACKEND=x11" "$SELFSERVICE_DESKTOP"; then
+        sudo sed -i 's|^Exec=|Exec=env GDK_BACKEND=x11 |' "$SELFSERVICE_DESKTOP"
+    fi
+fi
+
+# ============================================================
+# 8. AMD / VIDEO ACCELERATION VERIFICATION
 # ============================================================
 # Install Mesa + verification tools and print what HW accel the GPU
 # actually exposes. Citrix wfclient.ini has H264HWDecode=True, which
@@ -196,6 +221,26 @@ else
     echo "ufw not active, skipping firewall rules"
 fi
 
+
+# ============================================================
+# 9. SYSTEM-WIDE CONFIG OVERRIDES
+# ============================================================
+# Force the client to allow local overrides for parameters that are
+# usually dictated by the server (.ica file), like TWIMode (Seamless).
+echo ""
+echo "=== Applying system-wide configuration overrides ==="
+
+MODULE_INI="/opt/Citrix/ICAClient/config/module.ini"
+if [ -f "$MODULE_INI" ]; then
+    echo "Updating $MODULE_INI to allow local overrides..."
+    # Allow TWIMode override
+    sudo sed -i '/^\[WFClient\]/,/^\[/ s/TWIMode=.*/TWIMode=/' "$MODULE_INI" || true
+    # Allow ScreenPercent override
+    sudo sed -i '/^\[WFClient\]/,/^\[/ s/ScreenPercent=.*/ScreenPercent=/' "$MODULE_INI" || true
+    # Ensure client respects local wfclient.ini for these keys
+    # Note: On some versions we need to remove the value entirely from module.ini 
+    # to let the user config take precedence over the ICA file.
+fi
 
 # ============================================================
 # DONE

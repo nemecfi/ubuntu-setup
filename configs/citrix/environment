@@ -3,6 +3,10 @@
 # Sourced from ~/.bashrc.
 
 # --- Graphics & rendering -----------------------------------
+# Force X11 backend even on Wayland for better stability/tray/scaling
+export GDK_BACKEND=x11
+export QT_QPA_PLATFORM=xcb
+
 # Use hardware H.264/H.265 decode where possible (VAAPI on AMD).
 # Set to "software" if you see HW decode glitches.
 export VDGFX_THREAD_PRIORITY=high
