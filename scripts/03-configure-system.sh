@@ -77,6 +77,10 @@ fi
 echo ""
 echo "=== Applying GNOME tweaks ==="
 
+# Disable redundant Ubuntu Dock (prevents crashes with Dash-to-Dock)
+echo "Disabling redundant Ubuntu dock..."
+gnome-extensions disable ubuntu-dock@ubuntu.com || true
+
 # UI & Theme Tweaks
 gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
 gsettings set org.gnome.desktop.interface gtk-theme 'Adwaita-dark'
@@ -87,11 +91,20 @@ gsettings set org.gnome.desktop.interface show-battery-percentage true
 gsettings set org.gnome.mutter center-new-windows true
 gsettings set org.gnome.desktop.interface enable-hot-corners false
 
-# Fix search providers (Settings, Files, etc.)
+# Fix search providers (Search everything except Firefox web results)
 echo "Configuring search providers..."
 gsettings set org.gnome.desktop.search-providers disable-external false
 gsettings set org.gnome.desktop.search-providers disabled "['firefox_firefox.desktop', 'firefox.desktop']"
-gsettings set org.gnome.desktop.search-providers enabled "['org.gnome.Settings.desktop', 'org.gnome.Nautilus.desktop', 'org.gnome.Calculator.desktop', 'org.gnome.Characters.desktop']"
+gsettings reset org.gnome.desktop.search-providers enabled
+
+# Reset search index to ensure all apps are found
+echo "Resetting search index..."
+if command -v localsearch >/dev/null; then
+    yes | localsearch reset > /dev/null 2>&1 || true
+elif command -v tracker3 >/dev/null; then
+    yes | tracker3 reset --hard > /dev/null 2>&1 || true
+fi
+rm -rf ~/.cache/gnome-shell
 
 # Nautilus (File Manager) Tweaks
 echo "Applying File Manager tweaks..."
